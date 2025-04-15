@@ -36,7 +36,7 @@ class Magazine extends PrintEditionItem {
 }
 
 class Book extends PrintEditionItem {
-    constructor (name, releaseDate, pagesCount, author) {
+    constructor (author, name, releaseDate, pagesCount) {
         super(name, releaseDate,  pagesCount);
         this.author = author;
         this.type = 'book';
@@ -44,22 +44,85 @@ class Book extends PrintEditionItem {
 }
 
 class NovelBook extends Book {
-    constructor (name, releaseDate, pagesCount, author) {
-        super(name, releaseDate, pagesCount, author);
+    constructor (author, name, releaseDate, pagesCount) {
+        super(author, name, releaseDate, pagesCount);
         this.type = 'novel';
     }
 }
 
 class FantasticBook extends Book {
-    constructor (name, releaseDate, pagesCount, author) {
-        super(name, releaseDate, pagesCount, author);
+    constructor (author, name, releaseDate, pagesCount) {
+        super(author, name, releaseDate, pagesCount);
         this.type = 'fantastic';
     }
 }
 
 class DetectiveBook extends Book {
-    constructor (name, releaseDate, pagesCount, author) {
-        super(name, releaseDate, pagesCount, author);
+    constructor (author, name, releaseDate, pagesCount) {
+        super(author, name, releaseDate, pagesCount);
         this.type = 'detective';
     }
 }
+
+class Library {
+    constructor (name) {
+        this.name = name;
+        this.books = [];
+    }
+
+    addBook (book) {
+        if (book.state > 30) {
+            this.books.push(book);
+        }
+    }
+
+    findBookBy (type, value) {
+        const foundBook = this.books.find(book => book[type] === value);
+        return foundBook !== undefined ? foundBook : null;
+    }
+
+    giveBookByName (bookName) {
+        const index = this.books.findIndex(book => book.name === bookName);
+        if (index !== -1) {
+            const book = this.books[index];
+            this.books.splice(index, 1);
+            return book;
+        }
+        else {
+            return null;
+        }
+    }
+}
+
+const library = new Library("Библиотека имени Ленина");
+
+library.addBook(
+ new DetectiveBook(
+   "Артур Конан Дойл",
+   "Полное собрание повестей и рассказов о Шерлоке Холмсе в одном томе",
+   2019,
+   1008
+ )
+);
+library.addBook(
+ new FantasticBook(
+   "Аркадий и Борис Стругацкие",
+   "Пикник на обочине",
+   1972,
+   168
+ )
+);
+library.addBook(new Magazine("Мурзилка", 1919, 60));
+
+console.log(library.findBookBy("releaseDate", 1919).name); 
+
+console.log("Количество книг до выдачи: " + library.books.length);
+const picknick = library.giveBookByName("Пикник на обочине");
+console.log("Количество книг после выдачи: " + library.books.length);
+
+picknick.state = 25;
+picknick.fix();
+
+library.addBook(picknick);
+
+console.log("Количество книг после возвращения: " + library.books.length);
